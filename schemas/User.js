@@ -14,9 +14,9 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    favorite: {
-        type: [String]
-    }
+    favorite: [{
+        type: String
+    }]
 });
 
 module.exports = mongoose.model("User", userSchema);

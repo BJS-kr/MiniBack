@@ -19,10 +19,10 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    imgPath: {
-        type: [String],
+    imgPath: [{
+        type: String,
         required: true
-    }
+    }]
 
 });
 
