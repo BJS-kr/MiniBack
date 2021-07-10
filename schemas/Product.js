@@ -20,7 +20,7 @@ const productSchema = new Schema({
         required: true
     },
     imgPath: {
-        type: Array,
+        type: [String],
         required: true
     }
 

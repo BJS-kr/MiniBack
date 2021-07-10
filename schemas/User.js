@@ -15,7 +15,7 @@ const userSchema = new Schema({
         required: true
     },
     favorite: {
-        type: Array
+        type: [String]
     }
 });
 
