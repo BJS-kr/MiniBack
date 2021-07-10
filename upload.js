@@ -19,9 +19,9 @@ const upload = multer({
       }
       cb(null, true);
     },
-    // 크기 제한: 10메가
-    limits: { fileSize: 10 * 1024 * 1024 },
+    // 크기 제한: 1메가
+    limits: { fileSize: 1024 * 1024 },
   }),
-}).array('images', 10);
+});
 
 exports.upload = upload;

@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { upload } = require('./upload');
+const { s3upload } = require('./s3_upload');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -22,10 +23,8 @@ app.use(express.static(path.join(__dirname, 'public'))); // 전체 라우팅 경
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-
-
 app.get('/create', (req, res) => {
-  res.
+  res.send('create.html'); //?? 어떻게 보내줘야 되는거지
 });
 
 app.post('/create', upload.array('images', 10), async (req, res) => {
@@ -40,18 +39,43 @@ app.post('/create', upload.array('images', 10), async (req, res) => {
     description,
     images,
   });
+
+  // 마지막으로 생성된 글의 id를 찾아서 자신이 작성한 글로 리디렉트
+  // _id가 문자열이어야되나?
+  const latest = await Undefined.find({}).sort({ _id: -1 }).limit(1);
+  const targetId = latest._id;
+  res.redirect(`/detail/${targetId}`);
 });
 
 app.get('/detail/:id', (req, res) => {
+  // 게시글 띄울때 데이터 건네준거로 프론트에서 처리 가능. 딱히 만들건 없는 듯.
+});
 
-})
-
+// 좋아요는 어떤 식으로 구현?
+// 유져 DB에 특정 유져가 좋아요 누른 게시글 id 추가?
+// 그럼 애초에 회원가입할때 User DB에 좋아요한 글 id들을 저장할 column이 필요하다.
 app.post('/favorites/:id', async (req, res) => {
   const { id } = req.params;
-  const likes = await Likes.findById(id)
-  await Likes.findByIdAndUpdate(id, {$set:{likes:likes}})
-  res.redirect(`/detail/${id}`)
-})
+  const { userId, like } = req.body;
+  const targetUser = await User.findById(userId);
+  const target = targetUser.likes;
+
+  if (like) {
+    target.push(id);
+  } else {
+    target.remove(id);
+  }
+
+  await User.findByIdAndUpdate(id, { likes: target });
+  res.send({});
+});
+
+app.get('/mypage/:userId', (req, res) => {
+  const { userId } = req.params;
+  const target = await User.findById(userId);
+  const targetIds = target.likes;
+  res.json({ targetIds: targetIds });
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
