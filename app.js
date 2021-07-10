@@ -3,16 +3,20 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+
 const { upload } = require('./upload');
 const { s3upload } = require('./s3_upload');
+
+const connect = require('./schemas');
+connect();
+
+const app = express();
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 app.set('views', './views');
 app.set('view engine', 'pug');
-
-const app = express();
 
 app.use(logger('dev')); // dev, common, tiny, combined등의 옵션을 통해 log값이 달라짐.
 app.use(express.json()); // json응답을 오류없이 받을수 있게 해줌 4.16버전 이후부터 express내장
