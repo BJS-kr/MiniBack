@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../schemas/Product');
 
-router.put("/update/:productId", async (req, res) => {
+router.put("/:productId", async (req, res) => {
     const productId = req.params;
     const { productName, price, description, category, imgPath } = req.body;
 
@@ -20,7 +20,7 @@ router.put("/update/:productId", async (req, res) => {
 
 });
 
-router.delete("/delete/:productId", async (req, res) => {
+router.delete("/:productId", async (req, res) => {
     const productId = req.params;
 
     const isExist = await Product.findById(productId);
