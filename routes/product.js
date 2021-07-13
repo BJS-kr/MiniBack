@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
     insertedAt,
   });
   // 글작성완료하면 자신이 쓴 글로 이동할 수 있게
-  res.json({ latest: newProd._id });
+  res.status(201).json({ latest: newProd._id });
 });
 
 router.put('/:productId', async (req, res) => {

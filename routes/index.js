@@ -9,7 +9,7 @@ let currentPageNum = 0;
 router.get('/', async (req, res, next) => {
   pageNum = 0;
   const contents = pagination(currentPageNum, pageNum, last_id);
-  res.send({ contents: contents });
+  res.json({ contents: contents });
 });
 
 router.get('/:pageNum', async (req, res, next) => {
@@ -20,7 +20,7 @@ router.get('/:pageNum', async (req, res, next) => {
   //   .sort({ _id: -1 })
   //   .skip(10 * (pageNum - 1))
   //   .limit(10);
-  res.send({ contents: contents });
+  res.json({ contents: contents });
 });
 
 module.exports = router;

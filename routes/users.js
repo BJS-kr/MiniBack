@@ -26,7 +26,7 @@ router.post('/:postId', (req, res) => {
 
   PushOrPullFavorites(like, postId, userId);
 
-  res.send({ response: 'success' });
+  res.json({ response: 'success' });
 });
 
 // 마이페이지
