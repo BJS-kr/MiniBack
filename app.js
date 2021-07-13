@@ -11,9 +11,9 @@ connect();
 
 const app = express();
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const productRouter = require('./routes/product');
+const indexRouter = require(path.join(__dirname, '/routes/index'));
+const usersRouter = require(path.join(__dirname, '/routes/users'));
+const productRouter = require(path.join(__dirname, '/routes/product'));
 
 app.use(helmet()); // jwt를 로컬스토리지에 저장하는 방식이므로 xss공격 차단용 helmet
 // cors는 get, head, options에만 허용하는 것이 csrf보안상 좋다.

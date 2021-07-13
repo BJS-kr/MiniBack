@@ -1,4 +1,4 @@
-const Product = require('../../schemas/Product');
+const Product = require('../../schemas/product');
 
 exports.pagination = async function pagination(
   currentPageNum,

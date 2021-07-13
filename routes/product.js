@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../schemas/Product');
+const Product = require('../schemas/product');
 
 const { upload } = require('./functions/upload');
 const { s3upload } = require('./functions/s3_upload');
