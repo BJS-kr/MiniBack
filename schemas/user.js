@@ -14,11 +14,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  favorite: [
-    {
-      type: String,
-    },
-  ],
+  favorite: Array,
 });
 
 module.exports = mongoose.model('User', userSchema);

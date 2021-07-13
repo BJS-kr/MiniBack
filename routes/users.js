@@ -32,9 +32,11 @@ router.post('/:postId', (req, res) => {
 // 마이페이지
 router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
-  const target = await User.findOne({ userId });
-  const targetIds = target.likes;
-  res.json({ targetIds: targetIds });
+  const favorites = await User.findOne({ userId }).select({
+    favorite: 1,
+    _id: 0,
+  });
+  res.json({ favorites: favorites });
 });
 
 module.exports = router;
