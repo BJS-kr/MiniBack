@@ -1,5 +1,6 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const { PushOrPullFavorites } = require('./functions/favorites');
 const csrfProtection = require('csurf')({ cookie: true });
 
 // env 파일 읽기
@@ -9,29 +10,29 @@ const csrfProtection = require('csurf')({ cookie: true });
 const dotenv = require('dotenv');
 dotenv.config();
 
-process.env.PRIVATE_KEY = require('crypto').randomBytes(64).toString('hex');
+const privateKey = process.env.PRIVATE_KEY;
+
+// 회원가입
+// router.post('/', async (req, res) => {
+//   const { id, username, password } = req.body;
+//   const favorites = [];
+//   User.create({ id, username, password, favorites });
+// });
 
 // 좋아요
-app.post('/:postId', async (req, res) => {
-  const { id } = req.params;
+router.post('/:postId', (req, res) => {
+  const { postId } = req.params;
   const { userId, like } = req.body;
-  const targetUser = await User.findById(userId);
-  const target = targetUser.likes;
 
-  if (like) {
-    target.push(id);
-  } else {
-    target.remove(id);
-  }
+  PushOrPullFavorites(like, postId, userId);
 
-  await User.findByIdAndUpdate(id, { likes: target });
-  res.send({});
+  res.send({ response: 'success' });
 });
 
 // 마이페이지
-app.get('/:userId', (req, res) => {
+router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
-  const target = await User.findById(userId);
+  const target = await User.findOne({ userId });
   const targetIds = target.likes;
   res.json({ targetIds: targetIds });
 });

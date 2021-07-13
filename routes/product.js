@@ -5,7 +5,7 @@ const Product = require('../schemas/Product');
 const { upload } = require('./functions/upload');
 const { s3upload } = require('./functions/s3_upload');
 
-router.post('/', upload.array('images', 10), async (req, res) => {
+router.post('/', async (req, res) => {
   const { userId, productName, price, productCategory, title, description } =
     req.body;
   const images = req.body.url;
@@ -51,3 +51,5 @@ router.delete('/:productId', async (req, res) => {
   await isExist.delete();
   res.status(200).send({});
 });
+
+module.exports = router;
