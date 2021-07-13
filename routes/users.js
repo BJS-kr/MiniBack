@@ -32,10 +32,13 @@ router.post('/:postId', (req, res) => {
 // 마이페이지
 router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
-  const favorites = await User.findOne({ userId }).select({
+  const favoriteObjects = await User.findOne({ userId }).select({
     favorite: 1,
     _id: 0,
   });
+  const favorites = favoriteObjects.reduce((acc, curr) => {
+    return acc.push(curr.postId);
+  }, []);
   res.json({ favorites: favorites });
 });
 

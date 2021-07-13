@@ -22,15 +22,9 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
-  imgPath: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
-  date: {
-    type: String,
-  },
+  images: Array,
+  imgUploadCnt: Number,
+  insertedAt: Number,
 });
 
 module.exports = mongoose.model('Product', productSchema);

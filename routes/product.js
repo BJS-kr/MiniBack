@@ -6,12 +6,7 @@ const { upload } = require('./functions/upload');
 const { s3upload } = require('./functions/s3_upload');
 
 router.post('/', async (req, res) => {
-  const { userId, productName, price, productCategory, title, description } =
-    req.body;
-  const images = req.body.url;
-  const date = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
-
-  await Product.create({
+  const {
     userId,
     productName,
     price,
@@ -19,25 +14,40 @@ router.post('/', async (req, res) => {
     title,
     description,
     images,
-    date,
+    imgUploadCnt,
+    insertedAt,
+  } = req.body;
+
+  const newProd = await Product.create({
+    userId,
+    productName,
+    price,
+    productCategory,
+    title,
+    description,
+    images,
+    imgUploadCnt,
+    insertedAt,
   });
   // 글작성완료하면 자신이 쓴 글로 이동할 수 있게
-  res.json({ latest: userId, date });
+  res.json({ latest: newProd._id });
 });
 
 router.put('/:productId', async (req, res) => {
   const productId = req.params;
-  const { productName, price, description, category, imgPath } = req.body;
+  const { productName, price, description, productCategory, images } = req.body;
 
   await Product.findOneAndUpdate(
     { _id: productId },
     {
       $set: {
+        title: title,
         productName: productName,
         price: price,
         description: description,
-        category: category,
-        imgPath: imgPath,
+        productCategory: productCategory,
+        images: images,
+        imgUploadCnt: imgUploadCnt,
       },
     }
   );
