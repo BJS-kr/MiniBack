@@ -1,17 +1,13 @@
 const Product = require('../../schemas/product');
 
-exports.pagination = async function pagination(
-  currentPageNum,
-  pageNum,
-  last_id
-) {
+exports.pagination = async function (currentPageNum, pageNum, last_id) {
   const spin = Math.abs(pageNum - currentPageNum);
   if (last_id !== null) {
     if (pageNum > currentPageNum) {
       const targetToSlice = await Product.find({
         _id: { $gt: last_id },
       }).limit(10 * spin);
-      return targetToSlice.slice(-9);
+      return targetToSlice.slice(-10);
     } else {
       const targetToSlice = await Product.find({
         _id: { $lt: last_id },
@@ -19,9 +15,6 @@ exports.pagination = async function pagination(
       return targetToSlice.slice(0, 10);
     }
   } else {
-    const targetToSlice = await Product.find()
-      .sort({ _id: -1 })
-      .limit(10 * spin);
-    return targetToSlice.slice(-9);
+    return await Product.find().sort({ _id: -1 }).limit(10);
   }
 };
