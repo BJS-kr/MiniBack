@@ -8,8 +8,12 @@
   "dependencies": {
     "aws-sdk": "^2.942.0",
     "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
     "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
     "express": "~4.16.1",
+    "helmet": "^4.6.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "multer-s3": "^2.9.0",
