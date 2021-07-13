@@ -8,6 +8,7 @@ let currentPageNum = 0;
 
 router.get('/', async (req, res, next) => {
   pageNum = 0;
+  currentPageNum = 1;
   const contents = pagination(currentPageNum, pageNum, last_id);
   res.json({ contents: contents });
 });
@@ -15,6 +16,8 @@ router.get('/', async (req, res, next) => {
 router.get('/:pageNum', async (req, res, next) => {
   const { pageNum } = req.params;
   const contents = pagination(currentPageNum, pageNum, last_id);
+  last_id = contents[-1]._id;
+  currentPageNum = pageNum;
 
   // const contents = await Product.find()
   //   .sort({ _id: -1 })

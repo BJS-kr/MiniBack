@@ -24,6 +24,4 @@ exports.pagination = async function pagination(
       .limit(10 * spin);
     return targetToSlice.slice(-9);
   }
-  last_id = contents[-1]._id;
-  currentPageNum = pageNum;
 };
