@@ -7,14 +7,20 @@ exports.pagination = async function (currentPageNum, pageNum, last_id) {
       const targetToSlice = await Product.find({
         _id: { $gt: last_id },
       }).limit(10 * spin);
-      return targetToSlice.slice(-10);
+      return [targetToSlice.slice(-10), await Product.estimatedDocumentCount()];
     } else {
       const targetToSlice = await Product.find({
         _id: { $lte: last_id },
       }).limit(10 * spin);
-      return targetToSlice.slice(0, 10);
+      return [
+        targetToSlice.slice(0, 10),
+        await Product.estimatedDocumentCount(),
+      ];
     }
   } else {
-    return await Product.find().sort({ _id: -1 }).limit(10);
+    return [
+      await Product.find().sort({ _id: -1 }).limit(10),
+      await Product.estimatedDocumentCount(),
+    ];
   }
 };
