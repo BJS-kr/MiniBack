@@ -9,7 +9,8 @@ const { s3upload } = require('./functions/s3_upload');
 router.get('/search/:pageNum', async (req, res) => {
   const { pageNum } = req.params;
   try {
-    const contents = await Post.find({ $or: await SearchOptions(req) })
+    const options = await SearchOptions(req);
+    const contents = await Post.find({ $or: options })
       .sort({ _id: -1 })
       .skip(10 * (pageNum - 1))
       .limit(10);

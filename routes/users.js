@@ -26,7 +26,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY;
-
+exports.privateKey = privateKey;
 // 회원가입
 router.post('/', async (req, res) => {
   const { userId, username, password } = req.body;
