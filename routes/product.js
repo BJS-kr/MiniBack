@@ -71,8 +71,7 @@ router.put('/:productId', async (req, res) => {
 router.delete('/:productId', async (req, res) => {
   const { productId } = req.params;
 
-  const isExist = await Product.findById(productId);
-  await isExist.delete();
+  await Product.findByIdAndDelete(productId);
   res.status(200).send({});
 });
 

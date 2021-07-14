@@ -14,7 +14,7 @@ const userSchema = new Schema({
     salt: String,
     storedPassword: String,
   },
-  favorite: Array,
+  favorite: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
   userProfile: String,
 });
 

@@ -29,7 +29,7 @@ const privateKey = process.env.PRIVATE_KEY;
 
 // 회원가입
 router.post('/', async (req, res) => {
-  const { userId, username, password, re_password } = req.body;
+  const { userId, username, password } = req.body;
 
   try {
     await AreValuesMeetConditions(req);
@@ -100,25 +100,20 @@ router.post('/:postId', (req, res) => {
 
   PushOrPullFavorites(like, postId, userId);
 
-  res.json({ response: 'success' });
+  res.status(200).json({ response: 'success' });
 });
 
 // 마이페이지
 router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
   const myPosts = await Product.find({ 'user.userId': userId });
-  const favoriteObjects = await User.findOne({ userId }).select({
-    favorite: 1,
-    _id: 0,
-  });
-
-  console.log(favoriteObjects.favorite);
-  const postIds = favoriteObjects.favorite.reduce((acc, curr) => {
-    acc.push(curr.postId);
-    return acc;
-  }, []);
-  const favorites = await Product.find({ _id: { $in: postIds } });
-  res.json({ favorites: favorites, myPosts: myPosts });
+  User.findOne({ userId })
+    .select({ favorite: 1, _id: 0 })
+    .populate('favorite')
+    .exec((err, favorites) => {
+      if (err) return res.status(400).send(err);
+      res.status(200).json({ favorites: favorites.favorite, myPosts: myPosts });
+    });
 });
 
 module.exports = router;

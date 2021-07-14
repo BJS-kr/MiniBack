@@ -12,7 +12,6 @@ exports.IsUserIdExists = async function (userId) {
 exports.IsUsernameExists = async function (username) {
   const isUsernameExists = await User.find({ username });
   if (isUsernameExists.length > 0) {
-    console.log(isUsernameExists.length);
     throw '이미 존재하는 이름입니다.';
   }
 };
@@ -37,6 +36,7 @@ exports.AreValuesMeetConditions = async function (req) {
   try {
     await registerSchema.validateAsync(req.body);
   } catch (err) {
+    console.error(err);
     throw '아이디나 비밀번호가 가입 조건에 맞지 않습니다.';
   }
 };

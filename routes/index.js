@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
   //   last_id = contents[contents.length - 1]._id;
   // }
 
-  res.json({ contents: contents, totalLength: totalLength });
+  res.status(200).json({ contents: contents, totalLength: totalLength });
 });
 
 router.get('/:pageNum', async (req, res) => {
