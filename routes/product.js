@@ -2,8 +2,25 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../schemas/product');
 
+const { SearchOptions } = require('./functions/search');
 const { upload } = require('./functions/upload');
 const { s3upload } = require('./functions/s3_upload');
+
+router.get('/search/:pageNum', async (req, res) => {
+  const { pageNum } = req.params;
+  try {
+    const contents = await Post.find({ $or: await SearchOptions(req) })
+      .sort({ _id: -1 })
+      .skip(10 * (pageNum - 1))
+      .limit(10);
+    res.status(200).json({ contents: contents });
+  } catch (err) {
+    console.error(err);
+    res.status(400).send({
+      response: err,
+    });
+  }
+});
 
 router.post('/', async (req, res) => {
   const {

@@ -11,11 +11,15 @@ const productSchema = new Schema({
     type: Number,
     required: true,
   },
-  description: {
+  productCategory: {
     type: String,
     required: true,
   },
-  productCategory: {
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
     type: String,
     required: true,
   },
@@ -24,4 +28,5 @@ const productSchema = new Schema({
   insertedAt: Number,
 });
 
+productSchema.index({ title: 'text', description: 'text' });
 module.exports = mongoose.model('Product', productSchema);

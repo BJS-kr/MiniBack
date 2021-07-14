@@ -22,6 +22,15 @@ exports.IsPasswordIncludesUsername = function (password, username) {
   }
 };
 
+exports.AreValuesMeetConditions = async function (req) {
+  try {
+    await registerSchema.validateAsync(req.body);
+  } catch (err) {
+    console.error(err);
+    throw '아이디나 비밀번호가 가입 조건에 맞지 않습니다.';
+  }
+};
+
 exports.CreateSalt = function () {
   return crypto.randomBytes(64).toString('base64');
 };
@@ -30,13 +39,4 @@ exports.CreatePbkdf2HashedPassword = function (password, salt) {
   return crypto
     .pbkdf2Sync(password, salt, 105636, 64, 'sha512')
     .toString('base64');
-};
-
-exports.AreValuesMeetConditions = async function (req) {
-  try {
-    await registerSchema.validateAsync(req.body);
-  } catch (err) {
-    console.error(err);
-    throw '아이디나 비밀번호가 가입 조건에 맞지 않습니다.';
-  }
 };
