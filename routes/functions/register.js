@@ -3,14 +3,14 @@ const crypto = require('crypto');
 const User = require('../../schemas/user');
 
 exports.IsUserIdExists = async function (userId) {
-  const isUserIdExists = await User.find({ userId: userId });
+  const isUserIdExists = await User.find({ userId });
   if (isUserIdExists.length > 0) {
     throw '이미 가입된 아이디입니다.';
   }
 };
 
 exports.IsUsernameExists = async function (username) {
-  const isUsernameExists = await User.find({ username: username });
+  const isUsernameExists = await User.find({ username });
   if (isUsernameExists.length > 0) {
     console.log(isUsernameExists.length);
     throw '이미 존재하는 이름입니다.';

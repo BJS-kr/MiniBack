@@ -10,6 +10,10 @@ const {
   CreatePbkdf2HashedPassword,
   AreValuesMeetConditions,
 } = require('./functions/register');
+const {
+  IsUserIdExistsForLogIn,
+  IsPasswordMatchesToStoredPassword,
+} = require('./functions/login');
 
 const Product = require('../schemas/product');
 const User = require('../schemas/user');
@@ -64,15 +68,11 @@ router.post('/login', async (req, res) => {
     _id: 0,
   });
 
-  if (IsUserIdExists(userId)) {
-    res.status(401).json({
-      response: '가입되지 않은 아이디입니다.',
-    });
-  } else if (storedPassword !== CreatePbkdf2HashedPassword(password, salt)) {
-    res.status(401).json({
-      response: '아이디 또는 비밀번호가 일치하지 않습니다.',
-    });
-  } else {
+  try {
+    await IsUserIdExistsForLogIn(userId);
+    await IsPasswordMatchesToStoredPassword(password, storedPassword, salt);
+
+    const userInfo = await User.findOne({ userId }).select({ password: 0 });
     const token = jwt.sign(
       {
         userId: userId,
@@ -80,10 +80,16 @@ router.post('/login', async (req, res) => {
         iat: Math.floor(Date.now() / 1000) - 30,
       },
       privateKey,
-      { expiresIn: '1h' },
+      { expiresIn: '24h' },
       { algorithm: 'RS256' }
     );
-    res.status(200).send(token);
+
+    res.status(200).json({ token: token, userInfo: userInfo });
+  } catch (err) {
+    console.error(err);
+    res.status(401).json({
+      response: err,
+    });
   }
 });
 
