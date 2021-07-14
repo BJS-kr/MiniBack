@@ -10,11 +10,7 @@ router.get('/', async (req, res, next) => {
   pageNum = 0;
   currentPageNum = 1;
   const contents = pagination(currentPageNum, pageNum, last_id);
-  if (contents.length < 1) {
-    last_id = null;
-  } else {
-    last_id = contents[-1]._id;
-  }
+  last_id = contents.length < 10 ? null : contents[-1]._id;
   res.json({ contents: contents });
 });
 
