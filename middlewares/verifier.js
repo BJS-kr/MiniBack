@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { privateKey } = require('../routes/users');
 const User = require('../schemas/user');
 
-module.exports = (req, res) => {
+module.exports = (req, res, next) => {
   if (req.headers.authorization.split(' ')[0] === 'Bearer') {
     const tokenValue = req.headers.token.split(' ')[1];
     try {
