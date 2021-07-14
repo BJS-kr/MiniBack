@@ -40,8 +40,16 @@ router.get('/:productId', async (req, res) => {
 });
 
 router.put('/:productId', async (req, res) => {
-  const productId = req.params;
-  const { productName, price, description, productCategory, images } = req.body;
+  const { productId } = req.params;
+  const {
+    title,
+    productName,
+    price,
+    description,
+    productCategory,
+    images,
+    imgUploadCnt,
+  } = req.body;
 
   await Product.findOneAndUpdate(
     { _id: productId },
@@ -61,7 +69,7 @@ router.put('/:productId', async (req, res) => {
 });
 
 router.delete('/:productId', async (req, res) => {
-  const productId = req.params;
+  const { productId } = req.params;
 
   const isExist = await Product.findById(productId);
   await isExist.delete();
