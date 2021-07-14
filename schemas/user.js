@@ -15,6 +15,7 @@ const userSchema = new Schema({
     storedPassword: String,
   },
   favorite: Array,
+  userProfile: String,
 });
 
 module.exports = mongoose.model('User', userSchema);

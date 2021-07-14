@@ -7,7 +7,7 @@ const { s3upload } = require('./functions/s3_upload');
 
 router.post('/', async (req, res) => {
   const {
-    userId,
+    user,
     productName,
     price,
     productCategory,
@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
   } = req.body;
 
   const newProd = await Product.create({
-    userId,
+    user,
     productName,
     price,
     productCategory,

@@ -1,4 +1,4 @@
-const { registerSchema } = require('../schemas/register');
+const { registerSchema } = require('../../schemas/register');
 const crypto = require('crypto');
 const User = require('../../schemas/user');
 

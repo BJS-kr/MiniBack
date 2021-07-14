@@ -2,10 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const productSchema = new Schema({
-  userId: {
-    type: String,
-    required: true,
-  },
+  user: Object,
   productName: {
     type: String,
     required: true,
@@ -18,7 +15,7 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
-  category: {
+  productCategory: {
     type: String,
     required: true,
   },
