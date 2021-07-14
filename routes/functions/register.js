@@ -3,28 +3,23 @@ const crypto = require('crypto');
 const User = require('../../schemas/user');
 
 exports.IsUserIdExists = async function (userId) {
-  const isUserIdExists = await User.findOne({ userId });
-  if (isUserIdExists) {
-    return false;
-  } else {
-    return true;
+  const isUserIdExists = await User.find({ userId: userId });
+  if (isUserIdExists.length > 0) {
+    throw '이미 가입된 아이디입니다.';
   }
 };
 
 exports.IsUsernameExists = async function (username) {
-  const isUsernameExists = await User.findOne({ username });
-  if (isUsernameExists) {
-    return false;
-  } else {
-    return true;
+  const isUsernameExists = await User.find({ username: username });
+  if (isUsernameExists.length > 0) {
+    console.log(isUsernameExists.length);
+    throw '이미 존재하는 이름입니다.';
   }
 };
 
 exports.IsPasswordIncludesUsername = function (password, username) {
-  if (password.include(username)) {
-    return false;
-  } else {
-    return true;
+  if (password.includes(username)) {
+    throw '비밀번호에 닉네임을 포함시키지 마세요.';
   }
 };
 
@@ -41,9 +36,7 @@ exports.CreatePbkdf2HashedPassword = function (password, salt) {
 exports.AreValuesMeetConditions = async function (req) {
   try {
     await registerSchema.validateAsync(req.body);
-    return true;
   } catch (err) {
-    console.log(err);
-    return false;
+    throw '아이디나 비밀번호가 가입 조건에 맞지 않습니다.';
   }
 };

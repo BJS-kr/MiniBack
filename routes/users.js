@@ -11,6 +11,7 @@ const {
   AreValuesMeetConditions,
 } = require('./functions/register');
 
+const Product = require('../schemas/product');
 const User = require('../schemas/user');
 const csrfProtection = require('csurf')({ cookie: true });
 
@@ -24,38 +25,32 @@ const privateKey = process.env.PRIVATE_KEY;
 
 // 회원가입
 router.post('/', async (req, res) => {
-  const { userId, username, password } = req.body;
+  const { userId, username, password, re_password } = req.body;
 
-  if (!AreValuesMeetConditions(req)) {
-    res.status(400).json({
-      response: '입력조건에 맞지 않습니다.',
+  try {
+    await AreValuesMeetConditions(req);
+    await IsUserIdExists(userId);
+    await IsUsernameExists(username);
+    await IsPasswordIncludesUsername(password, username);
+
+    const salt = CreateSalt();
+    const storedPassword = CreatePbkdf2HashedPassword(password, salt);
+    const favorites = [];
+    await User.create({
+      userId,
+      username,
+      password: { salt, storedPassword },
+      favorites,
     });
-  } else if (!IsUsernameExists(username)) {
-    res.status(400).json({
-      response: '이미 가입된 이름입니다.',
+    res.status(201).json({
+      response: '가입완료!',
     });
-  } else if (!IsUserIdExists(userId)) {
+  } catch (err) {
+    console.error(err);
     res.status(400).json({
-      response: '이미 가입된 아이디입니다.',
-    });
-  } else if (!IsPasswordIncludesUsername(password, username)) {
-    res.status(400).json({
-      response: '비밀번호에 이름을 포함시킬 수 없습니다.',
+      response: err,
     });
   }
-
-  const salt = CreateSalt();
-  const storedPassword = CreatePbkdf2HashedPassword(password, salt);
-  const favorites = [];
-  await User.create({
-    userId,
-    username,
-    password: { salt, storedPassword },
-    favorites,
-  });
-  res.status(201).json({
-    response: '가입완료!',
-  });
 });
 
 router.post('/login', async (req, res) => {
@@ -105,14 +100,19 @@ router.post('/:postId', (req, res) => {
 // 마이페이지
 router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
+  const myPosts = await Product.find({ 'user.userId': userId });
   const favoriteObjects = await User.findOne({ userId }).select({
     favorite: 1,
     _id: 0,
   });
-  const favorites = favoriteObjects.favorite.reduce((acc, curr) => {
-    return acc.push(curr.postId);
+
+  console.log(favoriteObjects.favorite);
+  const postIds = favoriteObjects.favorite.reduce((acc, curr) => {
+    acc.push(curr.postId);
+    return acc;
   }, []);
-  res.json({ favorites: favorites });
+  const favorites = await Product.find({ _id: { $in: postIds } });
+  res.json({ favorites: favorites, myPosts: myPosts });
 });
 
 module.exports = router;

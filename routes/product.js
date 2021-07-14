@@ -33,6 +33,12 @@ router.post('/', async (req, res) => {
   res.status(201).json({ latest: newProd._id });
 });
 
+router.get('/:productId', async (req, res) => {
+  const { productId } = req.params;
+  const getProduct = await Product.findById(productId);
+  res.json({ getProduct: getProduct });
+});
+
 router.put('/:productId', async (req, res) => {
   const productId = req.params;
   const { productName, price, description, productCategory, images } = req.body;
