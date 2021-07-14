@@ -104,15 +104,17 @@ router.post('/:postId', (req, res) => {
 });
 
 // 마이페이지
-router.get('/:userId', async (req, res) => {
+router.get('/:userId', (req, res) => {
   const { userId } = req.params;
-  const myPosts = await Product.find({ 'user.userId': userId });
   User.findOne({ userId })
     .select({ favorite: 1, _id: 0 })
     .populate('favorite')
-    .exec((err, favorites) => {
+    .exec(async (err, favorites) => {
       if (err) return res.status(400).send(err);
-      res.status(200).json({ favorites: favorites.favorite, myPosts: myPosts });
+      res.status(200).json({
+        favorites: favorites.favorite,
+        myPosts: await Product.find({ 'user.userId': userId }),
+      });
     });
 });
 
