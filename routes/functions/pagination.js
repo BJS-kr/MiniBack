@@ -5,13 +5,13 @@ exports.pagination = async function (currentPageNum, pageNum, last_id) {
   if (last_id !== null) {
     if (pageNum > currentPageNum) {
       const targetToSlice = await Product.find({
-        _id: { $gt: last_id },
+        _id: { $lte: last_id },
       }).limit(10 * spin);
       const result = targetToSlice.slice(-10);
       return result;
     } else {
       const targetToSlice = await Product.find({
-        _id: { $lte: last_id },
+        _id: { $gt: last_id },
       }).limit(10 * spin);
       const result = targetToSlice.slice(0, 10);
       return result;
