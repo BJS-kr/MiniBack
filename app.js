@@ -39,9 +39,9 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   if (err.code !== 'EBADCSRFTOKEN') return next(err);
 
-  // handle CSRF token errors here
+  console.error(err);
   res.status(403);
-  res.send('form tampered with');
+  res.send({ response: err });
 });
 
 // error handler

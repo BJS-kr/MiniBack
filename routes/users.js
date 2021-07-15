@@ -59,14 +59,14 @@ router.post('/', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { userId, password } = req.body;
-  const { storedPassword, salt, username } = await User.findOne({
+  const { password: passwordFromDB, username } = await User.findOne({
     userId,
   }).select({
-    salt: 1,
-    storedPassword: 1,
+    password: 1,
     username: 1,
     _id: 0,
   });
+  const { salt, storedPassword } = passwordFromDB;
 
   try {
     await IsUserIdExistsForLogIn(userId);
