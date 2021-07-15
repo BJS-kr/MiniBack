@@ -1,5 +1,9 @@
 const { server } = require('./app');
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  },
+});
 const Chat = require('./schemas/chat');
 // 로그인한 사용자만 각 채팅방에 입장할 수 있도록, 토큰 검증이 됐을때만 채팅방 입장이 가능하도록 프론트에서 구현(입장 클릭 -> verify -> true일경우 ㄱㄱ)
 
@@ -9,7 +13,7 @@ io.sockets.on('connection', (socket) => {
   socket.on('join', async (data) => {
     if (!Object.keys(io.sockets.adapter.rooms).includes(data.room)) {
       if (!(await Chat.findOne({ postId: data.room }))) {
-        await Chat.Create({ postId: data.room, chatLog: [] });
+        await Chat.create({ postId: data.room, chatLog: [] });
       } else {
         const chatLogs = await Chat.findOne({ postId: data.room }).select({
           chatLog: 1,
