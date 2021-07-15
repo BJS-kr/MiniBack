@@ -10,12 +10,12 @@ router.get('/search/:pageNum', async (req, res) => {
   const { pageNum } = req.params;
   try {
     const options = await SearchOptions(req);
-    const contents = await Post.find({ $or: options })
+    const contents = await Product.find({ $or: options })
       .sort({ _id: -1 })
       .skip(10 * (pageNum - 1))
       .limit(10);
 
-    Post.find({ $or: options })
+    Product.find({ $or: options })
       .exec()
       .count((err, totalLength) => {
         if (err) return res.status(400).send({ response: err });
