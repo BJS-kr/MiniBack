@@ -5,13 +5,16 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
+const http = require('http');
 
 const connect = require('./schemas');
 connect();
+
 const { chat } = require('./socketIo');
 chat();
 
 const app = express();
+const server = http.createServer(app);
 
 const indexRouter = require(path.join(__dirname, '/routes/index'));
 const usersRouter = require(path.join(__dirname, '/routes/users'));
@@ -54,4 +57,4 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
 });
 
-module.exports = app;
+exports.server = server;
