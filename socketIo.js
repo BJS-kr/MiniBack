@@ -38,11 +38,20 @@ io.sockets.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', async (data) => {
-    await Chat.findOneAndUpdate(
-      { _id: io.sockets.manager.roomClients[socket.id] },
+    console.log(
+      `유저네임:${data.username}`,
+      `메세지:${data.message}`,
+      `postId:${data.postId}`
+    );
+
+    await Chat.update(
+      { postId: data.postId },
       {
         $push: {
-          chatLog: { username: data.username, message: data.message },
+          chatLog: {
+            $each: [{ username: data.username, message: data.message }],
+            $slice: -50,
+          },
         },
       }
     );
