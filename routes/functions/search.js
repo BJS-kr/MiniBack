@@ -3,7 +3,7 @@ exports.SearchOptions = (req) => {
     return [{ title: new RegExp(req.query.keyword) }];
   } else if (req.query.option == 'description') {
     return [{ description: new RegExp(req.query.keyword) }];
-  } else if (req.query.option == 'title+description') {
+  } else if (req.query.option == 'titledescription') {
     return [
       { title: new RegExp(req.query.keyword) },
       { description: new RegExp(req.query.keyword) },

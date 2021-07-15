@@ -12,10 +12,7 @@ router.get('/', async (req, res) => {
 
   res.status(200).json({ contents: contents, totalLength: totalLength });
 });
-// req에
-// headers:{
-//   authorization: `Bearer ${localStorage.getItem("token")}`
-// }
+
 router.get('/:pageNum', verifier, async (req, res) => {
   const { pageNum } = req.params;
   const totalLength = await Product.estimatedDocumentCount();
@@ -25,16 +22,19 @@ router.get('/:pageNum', verifier, async (req, res) => {
     .limit(10);
 
   if (res.locals.username) {
-    const { username } = res.locals.username;
-    const favorites = User.findOne({ username: username }).select({
+    const favorites = await User.findOne({
+      username: res.locals.username,
+    }).select({
       favorite: 1,
       _id: 0,
     });
+
     res.json({
       contents: contents,
       totalLength: totalLength,
       favorites: favorites,
     });
+    return;
   }
   res.json({
     contents: contents,

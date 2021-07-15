@@ -5,7 +5,6 @@ const io = require('socket.io')(server, {
   },
 });
 const Chat = require('./schemas/chat');
-// 로그인한 사용자만 각 채팅방에 입장할 수 있도록, 토큰 검증이 됐을때만 채팅방 입장이 가능하도록 프론트에서 구현(입장 클릭 -> verify -> true일경우 ㄱㄱ)
 
 io.sockets.on('connection', (socket) => {
   console.log('확인용 로그: 새로운 소켓 연결됨');
@@ -38,26 +37,21 @@ io.sockets.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', async (data) => {
-    console.log(
-      `유저네임:${data.username}`,
-      `메세지:${data.message}`,
-      `postId:${data.postId}`
-    );
+    io.to(data.room).emit('updateMessage', {
+      name: socket.name,
+      message: data.message,
+    });
 
     await Chat.update(
       { postId: data.postId },
       {
         $push: {
           chatLog: {
-            $each: [{ username: data.username, message: data.message }],
+            $each: [{ username: socket.name, message: data.message }],
             $slice: -50,
           },
         },
       }
     );
-    io.to(data.room).emit('updateMessage', {
-      name: data.username,
-      message: data.message,
-    });
   });
 });
