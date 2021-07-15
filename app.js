@@ -10,9 +10,6 @@ const http = require('http');
 const connect = require('./schemas');
 connect();
 
-const { chat } = require('./socketIo');
-chat();
-
 const app = express();
 const server = http.createServer(app);
 
