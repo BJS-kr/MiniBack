@@ -59,14 +59,12 @@ router.post('/', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { userId, password } = req.body;
-  const { password: passwordFromDB, username } = await User.findOne({
+  const {
+    password: { salt, storedPassword },
+    username,
+  } = await User.findOne({
     userId,
-  }).select({
-    password: 1,
-    username: 1,
-    _id: 0,
-  });
-  const { salt, storedPassword } = passwordFromDB;
+  }).select('password.salt password.storedPassword username -_id');
 
   try {
     await IsUserIdExistsForLogIn(userId);
@@ -84,7 +82,11 @@ router.post('/login', async (req, res) => {
       { algorithm: 'RS256' }
     );
 
-    res.status(200).json({ token: token, userInfo: userInfo });
+    const _ids = userInfo.favorite.reduce((acc, curr) => {
+      return [...acc, { _id: curr }];
+    }, []);
+    console.log(_ids);
+    res.status(200).json({ token: token, userInfo: userInfo, _ids: _ids });
   } catch (err) {
     console.error(err);
     res.status(401).json({
