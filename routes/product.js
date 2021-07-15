@@ -14,7 +14,13 @@ router.get('/search/:pageNum', async (req, res) => {
       .sort({ _id: -1 })
       .skip(10 * (pageNum - 1))
       .limit(10);
-    res.status(200).json({ contents: contents });
+
+    Post.find({ $or: options })
+      .exec()
+      .count((err, totalLength) => {
+        if (err) return res.status(400).send({ response: err });
+        res.status(200).json({ contents: contents, totalLength: totalLength });
+      });
   } catch (err) {
     console.error(err);
     res.status(400).send({
@@ -60,30 +66,34 @@ router.get('/:productId', async (req, res) => {
 router.put('/:productId', async (req, res) => {
   const { productId } = req.params;
   const {
-    title,
     productName,
     price,
-    description,
     productCategory,
+    title,
+    description,
     images,
     imgUploadCnt,
+    // insertedAt은 수정이니까 필요없는 건가?
   } = req.body;
 
-  await Product.findOneAndUpdate(
-    { _id: productId },
-    {
-      $set: {
-        title: title,
-        productName: productName,
-        price: price,
-        description: description,
-        productCategory: productCategory,
-        images: images,
-        imgUploadCnt: imgUploadCnt,
-      },
-    }
-  );
-  res.status(200).send({});
+  try {
+    await Product.findByIdAndUpdate(productId, {
+      productName: productName,
+      price: price,
+      productCategory: productCategory,
+      title: title,
+      description: description,
+      images: images,
+      imgUploadCnt: imgUploadCnt,
+    });
+
+    res.status(200).send({ response: '수정완료!' });
+  } catch (err) {
+    console.error(err);
+    res.status(400).send({
+      response: err,
+    });
+  }
 });
 
 router.delete('/:productId', async (req, res) => {
