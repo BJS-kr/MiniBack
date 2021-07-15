@@ -39,7 +39,7 @@ io.sockets.on('connection', (socket) => {
 
   socket.on('sendMessage', async (data) => {
     await Chat.findOneAndUpdate(
-      { postId },
+      { _id: io.sockets.manager.roomClients[socket.id] },
       {
         $push: {
           chatLog: { username: data.username, message: data.message },

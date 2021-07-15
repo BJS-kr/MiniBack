@@ -5,6 +5,7 @@ const Product = require('../schemas/product');
 const { SearchOptions } = require('./functions/search');
 const { upload } = require('./functions/upload');
 const { s3upload } = require('./functions/s3_upload');
+const Chat = require('../schemas/chat');
 
 router.get('/search/:pageNum', async (req, res) => {
   const { pageNum } = req.params;
@@ -99,7 +100,10 @@ router.delete('/:productId', async (req, res) => {
   const { productId } = req.params;
 
   await Product.findByIdAndDelete(productId);
-  res.status(200).send({});
+  await Chat.findByIdAndDelete(productId);
+  res.status(200).send({
+    response: 'success!',
+  });
 });
 
 module.exports = router;
