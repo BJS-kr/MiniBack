@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
     const _ids = userInfo.favorite.reduce((acc, curr) => {
       return [...acc, { _id: curr }];
     }, []);
-    console.log(_ids);
+    
     res.status(200).json({ token: token, userInfo: userInfo, _ids: _ids });
   } catch (err) {
     console.error(err);

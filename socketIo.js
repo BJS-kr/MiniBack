@@ -7,7 +7,7 @@ exports.chat = () => {
     console.log('확인용 로그: 새로운 소켓 연결됨');
 
     socket.on('join', async (data) => {
-      if (!io.sockets.adapter.rooms.includes(data.room)) {
+      if (!Object.keys(io.sockets.adapter.rooms).includes(data.room)) {
         if (!(await Chat.findOne({ postId: data.room }))) {
           await Chat.Create({ postId: data.room, chatLog: [] });
         } else {
@@ -34,7 +34,6 @@ exports.chat = () => {
     });
 
     socket.on('sendMessage', async (data) => {
-      data.name = socket.name;
       await Chat.findOneAndUpdate(
         { postId },
         {
