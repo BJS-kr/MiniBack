@@ -15,7 +15,7 @@ exports.chat = () => {
             chatLog: 1,
             _id: 0,
           });
-          io.emit('chatLogs', chatLogs);
+          io.to(data.room).emit('chatLogs', chatLogs);
         }
       }
       socket.name = data.username;
