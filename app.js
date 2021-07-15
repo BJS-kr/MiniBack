@@ -8,6 +8,8 @@ const helmet = require('helmet');
 
 const connect = require('./schemas');
 connect();
+const { chat } = require('./socketIo');
+chat();
 
 const app = express();
 
